@@ -32,7 +32,7 @@ public class Question {
 	
 	private LocalDateTime createDate;
 	
-//cascade = CascadeType.REMOVE->질문글이 삭제되면 질문글에 달린 답변도 같이 DB에서 삭제되는 옵션
+	//cascade = CascadeType.REMOVE->질문글이 삭제되면 질문글에 달린 답변도 같이 DB에서 삭제되는 옵션
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) //1대 n 관계,(1대 다) 
 	private ArrayList<Answer> answerList;
 	//질문 1개에 여러개의 답변이 될수 있다

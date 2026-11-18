@@ -2,10 +2,12 @@ package com.css.sbb.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,8 +35,8 @@ public class Question {
 	private LocalDateTime createDate;
 	
 	//cascade = CascadeType.REMOVE->질문글이 삭제되면 질문글에 달린 답변도 같이 DB에서 삭제되는 옵션
-	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE) //1대 n 관계,(1대 다) 
-	private ArrayList<Answer> answerList;
+	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) //1대 n 관계,(1대 다) 
+	private List<Answer> answerList;
 	//질문 1개에 여러개의 답변이 될수 있다
 	//-> 질문 1개 객체에 여러개의 답변이 저장될수 있는 자리를 마련
 	

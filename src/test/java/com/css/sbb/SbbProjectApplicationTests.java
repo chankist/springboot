@@ -34,89 +34,149 @@ class SbbProjectApplicationTests {
 //		questionRepository.save(q1);
 //		
 //	}
-
-	@Test
-	@DisplayName("question 테이블 select 테스트")
-	void testJpa2() {
-		//select * from question;
-		List<Question> questionList = questionRepository.findAll();
-		
-		assertEquals(3, questionList.size());
-		
-		System.out.println(questionList.get(0).getSubject());
-	}
-	
-	@Test
-	@DisplayName("번호로 질문글 찾기")
-	void testJpa3() {
-		//select * from question where id=2;
-		Optional<Question> questionOptional = questionRepository.findById(2);//기본키인 id값으로 질문글 찾기
-		if(questionOptional.isPresent()) {
-			Question question = questionOptional.get();
-			System.out.println(question.getSubject());
-		}
-	}
-	
-	
-	@Test
-	@DisplayName("제목으로 질문글 찾기")
-	void testJpa4() {
-		//select * from question where subject=?;
-		List<Question> subjectList = questionRepository.findBySubject("안녕하세요 질문 3번 테스트입니다.");
-		System.out.println(subjectList.get(0).getId());//찾은 글의 번호 출력
-		assertEquals(3, subjectList.get(0).getId());
-	}
-	
-	
-	@Test
-	@DisplayName("제목으로 질문글 찾기")
-	void testJpa5() {
-		// 1. findBySubjectListLike -> findBySubjectLike 로 변경
-		List<Question> subjectList1 = questionRepository.findBySubjectLike("%안녕%");
-		assertEquals(3, subjectList1.size());
-		
-		// 2. findBySubjectListContaining -> findBySubjectContaining 로 변경
-		List<Question> subjectList2 = questionRepository.findBySubjectContaining("안녕");
-		assertEquals(3, subjectList2.size());
-		
-		// select * from question where subject like ? or content ? order by creat_data asc;
-		List<Question> subjectList3 = questionRepository.findBySubjectLikeOrContentLike("%안녕%","%안녕%");
-		assertEquals(3, subjectList3.size());
-		
-		
-		List<Question> subjectList4 = questionRepository.findBySubjectLikeOrContentLikeOrderByCreateDateAsc("%안녕%","%안녕%");
-		assertEquals(3, subjectList4.size());
-		
-	}
-	
+//
 //	@Test
-//	@DisplayName("질문글 삭제 테스트")
-//	void testJpa6() {
-//		Optional<Question> qOptional = questionRepository.findById(2);
-//		if(qOptional.isPresent()) {//해당 번호 글이 존재 하는지 확인후에 삭제를 추천
-//		questionRepository.deleteById(2);//2번 글 삭제
+//	@DisplayName("question 테이블 select 테스트")
+//	void testJpa2() {
+//		//select * from question;
+//		List<Question> questionList = questionRepository.findAll();
+//		
+//		assertEquals(3, questionList.size());
+//		
+//		System.out.println(questionList.get(0).getSubject());
 //	}
+//	
+//	@Test
+//	@DisplayName("번호로 질문글 찾기")
+//	void testJpa3() {
+//		//select * from question where id=2;
+//		Optional<Question> questionOptional = questionRepository.findById(2);//기본키인 id값으로 질문글 찾기
+//		if(questionOptional.isPresent()) {
+//			Question question = questionOptional.get();
+//			System.out.println(question.getSubject());
+//		}
+//	}
+//	
+//	
+//	@Test
+//	@DisplayName("제목으로 질문글 찾기")
+//	void testJpa4() {
+//		//select * from question where subject=?;
+//		List<Question> subjectList = questionRepository.findBySubject("안녕하세요 질문 3번 테스트입니다.");
+//		System.out.println(subjectList.get(0).getId());//찾은 글의 번호 출력
+//		assertEquals(3, subjectList.get(0).getId());
+//	}
+//	
+//	
+//	@Test
+//	@DisplayName("제목으로 질문글 찾기")
+//	void testJpa5() {
+//		// 1. findBySubjectListLike -> findBySubjectLike 로 변경
+//		List<Question> subjectList1 = questionRepository.findBySubjectLike("%안녕%");
+//		assertEquals(3, subjectList1.size());
+//		
+//		// 2. findBySubjectListContaining -> findBySubjectContaining 로 변경
+//		List<Question> subjectList2 = questionRepository.findBySubjectContaining("안녕");
+//		assertEquals(3, subjectList2.size());
+//		
+//		// select * from question where subject like ? or content ? order by creat_data asc;
+//		List<Question> subjectList3 = questionRepository.findBySubjectLikeOrContentLike("%안녕%","%안녕%");
+//		assertEquals(3, subjectList3.size());
+//		
+//		
+//		List<Question> subjectList4 = questionRepository.findBySubjectLikeOrContentLikeOrderByCreateDateAsc("%안녕%","%안녕%");
+//		assertEquals(3, subjectList4.size());
+//		
+//	}
+//	
+////	@Test
+////	@DisplayName("질문글 삭제 테스트")
+////	void testJpa6() {
+////		Optional<Question> qOptional = questionRepository.findById(2);
+////		if(qOptional.isPresent()) {//해당 번호 글이 존재 하는지 확인후에 삭제를 추천
+////		questionRepository.deleteById(2);//2번 글 삭제
+////	}
+//	
+//	@Test
+//	@DisplayName("질문글 제목과 내용 수정하기")
+//	void testJpa7() {
+//		//update question set subject=? where id=?;
+//		//update 메소드는 존재하지 않음
+//		//-> 해당 번호의 글을 가져오기(finById)=> 글 수정후 save
+//		Optional<Question> questionOp = questionRepository.findById(2);//2번 글 가져오기
+//		if(questionOp.isPresent()) {
+//			Question question = questionOp.get();
+//			question.setSubject("반갑습니다.");
+//			question.setContent("오늘 비가 옴니다!");
+//			questionRepository.save(question);
+//		}
+//		
+//	}
+//	
+//	@Test
+//    void testJpa() {        
+//        Question q1 = new Question();
+//        q1.setSubject("sbb가 무엇인가요?");
+//        q1.setContent("sbb에 대해서 알고 싶습니다.");
+//        q1.setCreateDate(LocalDateTime.now());
+//        this.questionRepository.save(q1);  // 첫번째 질문 저장
+//
+//        Question q2 = new Question();
+//        q2.setSubject("스프링부트 모델 질문입니다.");
+//        q2.setContent("id는 자동으로 생성되나요?");
+//        q2.setCreateDate(LocalDateTime.now());
+//        this.questionRepository.save(q2);  // 두번째 질문 저장
+//    }
 	
-	@Test
-	@DisplayName("질문글 제목과 내용 수정하기")
-	void testJpa7() {
-		//update question set subject=? where id=?;
-		//update 메소드는 존재하지 않음
-		//-> 해당 번호의 글을 가져오기(finById)=> 글 수정후 save
-		Optional<Question> questionOp = questionRepository.findById(2);//2번 글 가져오기
-		if(questionOp.isPresent()) {
-			Question question = questionOp.get();
-			question.setSubject("반갑습니다.");
-			question.setContent("오늘 비가 옴니다!");
-			questionRepository.save(question);
+//	 @Test
+//	    void testJpa() {
+//	        List<Question> all = this.questionRepository.findAll();
+//	        assertEquals(5, all.size());
+//
+//	        Question q = all.get(3);//첫번째 글
+//	        assertEquals("sbb가 무엇인가요?", q.getSubject());
+//	    }
+	
+//	
+//	   @Test
+//	    void testJpa() {
+//	        Optional<Question> oq = this.questionRepository.findById(4);
+//	        if(oq.isPresent()) {
+//	            Question q = oq.get();
+//	            assertEquals("sbb가 무엇인가요?", q.getSubject());
+//	        }
+//	    }
+//	
+//
+//		@Test
+//		@DisplayName("질문 수정 테스트")
+//		void testJpa2() {
+//			//JpaRepository에 update메소드는 존재하지 않음
+//			//1.findBy로 레코드를 찾아온다
+//			//2.찾아온 레코드의 내용을 수정(setter 사용)
+//			//3.수정한 후에 save로 다시 DB에 넣기
+//			
+//			Optional<Question> op = questionRepository.findById(1);//1번 글 가져오기
+//			if(op.isPresent()) {//참일 경우에만 레코드 가져오기 가능
+//				Question question = op.get();
+//				question.setContent("내용도 수정했습니다.");
+//				question.setSubject("오늘 제목 수정했습니다.");
+//				questionRepository.save(question);
+//				
+//			}
+//		
+//		}
+//	
+		@Test
+		@DisplayName("질문글 삭제 연습")
+		void testJpa3() {
+			//questionRepository.deleteById(3);//3번 질문글 삭제
+			
+			Optional<Question> op = questionRepository.findById(3);
+			if(op.isPresent()) {//참이면 삭제할 질문글이 존재
+				questionRepository.delete(op.get());//참이면 삭제
+			}
 		}
-		
-	}
-	
-	
-	
-	
-	
 	
 	
 	

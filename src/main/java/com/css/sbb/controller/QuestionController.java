@@ -1,35 +1,85 @@
 package com.css.sbb.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.css.sbb.dto.QuestionDto;
+import com.css.sbb.dto.QuestionForm;
 import com.css.sbb.entity.Question;
 import com.css.sbb.repository.QuestionRepository;
+import com.css.sbb.service.QuestionService;
 
+import jakarta.validation.Valid;
+
+@RequestMapping("/question")
 @Controller
 public class QuestionController {
-
+	
 	@Autowired
-	private QuestionRepository questionRepository;
+	private QuestionService questionService;
 	
-	@GetMapping("/question/list")//모든 질문 목록 요청
-	public String list(Model model) {
-		List<Question> questionList = questionRepository.findAll();
-		//model 객체에 질문 리스트 List 객체에 전송해주기
-		model.addAttribute("questionList", questionList);
+	@GetMapping("/") //root 요청->index.html
+	public String root() {
+		return "index";
+	}
+	
+	@GetMapping("/list") //모든 질문 목록 요청->question/list?page=3
+	public String list(Model model,@RequestParam(value = "page", defaultValue = "0") int page) {
 		
-		return "question_list";//.html은 쓰지 않음
+		//사용자가 클릭한 페이지 번호에 해당하는 질문 리스트 가져오기(질문 10개 씩)
+		Page<Question> pageList = questionService.getQuestionList(page);
+		
+		//model 객체에 질문리스트 List 객체 전송해주기
+		model.addAttribute("questionList", pageList);
+		
+		return "question_list"; //.html은 쓰지 않음
 	}
 	
-	@GetMapping("/test")
-	public String test(Model model) {
-		model.addAttribute("name", "홍길동");
-		model.addAttribute("age", 25);
-	
-		return "test";
+	@GetMapping("/detail/{id}")
+	//유저가 클릭한 질문글 번호가 들어올 자리에 {변수이름}을 선언
+	public String detail(@PathVariable("id") Integer id, Model model) {
+		
+		//Service에 유저가 클릭한 글의 번호에 해당하는 엔티티를 가져오는 호출
+		Question question = questionService.getQuestion(id);
+		
+		if(question != null) { //해당 글이 존재함			
+			model.addAttribute("question", question);			
+		} else { //해당 글이 존재하지 않음
+			model.addAttribute("errMsg", "선택하신 글이 존재하지 않습니다.");
+		}
+		
+		return "question_detail";
 	}
+	
+	@GetMapping("/create") // /question/create -> 질문등록 폼 페이지를 보여달라는 요청
+	public String questionCreate() {
+		return "question_form";
+	}
+	
+	@PostMapping("/create") //요청의 이름은 같으나 get, post 방식이 다르므로 같은 요청이름으로 생성 가능
+	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult) {
+		
+		if(bindingResult.hasErrors()) { //참->에러가 발생, 유효성체크에서 에러가 발생
+			return "question_form";
+		}
+		
+		// Service 에서 db에 질문을 저장하는 메소드를 호출
+		questionService.createQuestion(questionForm.getSubject(), questionForm.getContent());
+		
+		return "redirect:/question/list";
+		
+	}
+	
+	
 }

@@ -15,6 +15,7 @@ import com.css.sbb.entity.Answer;
 import com.css.sbb.entity.Question;
 import com.css.sbb.repository.AnswerRepository;
 import com.css.sbb.repository.QuestionRepository;
+import com.css.sbb.service.QuestionService;
 
 import jakarta.transaction.Transactional;
 
@@ -26,6 +27,9 @@ class SbbProjectTest {
 	
 	@Autowired
 	private QuestionRepository questionRepository;
+	
+	@Autowired
+	private QuestionService questionService;
 	
 //	@Test
 //	@DisplayName("답변글 저장 테스트")
@@ -56,22 +60,32 @@ class SbbProjectTest {
 //        Answer a = oa.get();
 //        assertEquals(5, a.getQuestion().getId());
 //    }
-	@Transactional
-	@Test
-	@DisplayName("5번 질문글에 달린 답변들 확인 테스트")
-	void testJpa() {
-		Optional<Question> op5 = questionRepository.findById(5);//5번 질문글 가져오기
-		if(op5.isPresent()) {//참이면 5번 질문글 존재확인
-			Question q5 = op5.get();//5번 질문글 가져오기
-			
-			List<Answer> answeList = q5.getAnswerList();//5번 질문글에 달린 답변글들 list
-			System.out.println(answeList.get(0).getContent());
-			//5번 질문글에 달린 답변중 첫번째 답변의 내용 출력
-			System.out.println(answeList.get(1).getContent());
-			//5번 질문글에 달린 답변중 두번째 답변의 내용 출력
-		}
-	}
+//	@Transactional
+//	@Test
+//	@DisplayName("5번 질문글에 달린 답변들 확인 테스트")
+//	void testJpa() {
+//		Optional<Question> op5 = questionRepository.findById(5);//5번 질문글 가져오기
+//		if(op5.isPresent()) {//참이면 5번 질문글 존재확인
+//			Question q5 = op5.get();//5번 질문글 가져오기
+//			
+//			List<Answer> answeList = q5.getAnswerList();//5번 질문글에 달린 답변글들 list
+//			System.out.println(answeList.get(0).getContent());
+//			//5번 질문글에 달린 답변중 첫번째 답변의 내용 출력
+//			System.out.println(answeList.get(1).getContent());
+//			//5번 질문글에 달린 답변중 두번째 답변의 내용 출력
+//		}
+//	}
 	
+	@Test
+	@DisplayName("dummy data 300개 생성")
+	public void testJpa() {
+		for(int i=1;i<=300;i++) {
+			String subject = "테스트 질문 데이터입니다. -" +i;
+            String content = "테스트 질문 내용 입니다. -" +i;
+            questionService.createQuestion(subject, content);
+		}
+		
+	}
 	
 	
 }
